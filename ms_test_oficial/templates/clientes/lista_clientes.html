@@ -1,0 +1,64 @@
+{% extends "clientes/base.html" %}
+
+{% block content %}
+<h2>Clientes</h2>
+
+<p>
+    {% if mostrar_inativos %}
+        <a href="{% url 'lista_clientes' %}">Mostrar apenas ativos</a>
+    {% else %}
+        <a href="{% url 'lista_clientes' %}?mostrar_inativos=1">Mostrar todos</a>
+    {% endif %}
+</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>E-mail</th>
+            <th>Tipo</th>
+            <th>Criado em</th>
+            <th>Status</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cliente in clientes %}
+        <tr>
+            <td>{{ cliente.id }}</td>
+            <td>{{ cliente.nome }}</td>
+            <td>{{ cliente.email }}</td>
+            <td>{{ cliente.get_tipo_display }}</td>
+            <td>{{ cliente.criado_em }}</td>
+            <td>
+                {% if cliente.ativo %}
+                    Ativo
+                {% else %}
+                    Inativo
+                {% endif %}
+            </td>
+            <td>
+                {% if cliente.ativo %}
+                    <form method="post" action="{% url 'inativar_cliente' cliente.id %}" class="acoes-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="mostrar_inativos" value="{{ mostrar_inativos|yesno:'1,0' }}">
+                        <button type="submit">Inativar</button>
+                    </form>
+                {% else %}
+                    <form method="post" action="{% url 'reativar_cliente' cliente.id %}" class="acoes-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="mostrar_inativos" value="{{ mostrar_inativos|yesno:'1,0' }}">
+                        <button type="submit">Reativar</button>
+                    </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7">Nenhum cliente encontrado.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
