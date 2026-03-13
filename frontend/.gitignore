@@ -1,0 +1,17 @@
+# Dependencies
+/node_modules
+
+# Build output
+/dist
+
+# IDE
+.idea/
+*.swp
+*.swo
+
+# Angular cache
+/.angular
+
+# Environment files
+.env
+.env.local
