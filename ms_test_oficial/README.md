@@ -86,30 +86,29 @@ python manage.py runserver
 
 1. **Campo `ativo` no model Cliente** — adicionado como `BooleanField(default=True)`. Todos os clientes são ativos por padrão ao serem criados.
 
-2. **Listagem com filtro** — a listagem exibe apenas clientes ativos por padrão. Para ver todos (incluindo inativos), basta acessar com o parâmetro `?todos=1`.
+2. **Listagem com filtro** — a listagem exibe apenas clientes ativos por padrão. Para ver todos (incluindo inativos), basta acessar com o parâmetro `?mostrar_inativos=1`.
 
 3. **Inativar e reativar** — criadas views e endpoints que permitem alterar o status do cliente via POST (template) ou PATCH (API).
 
-4. **Testes automatizados** — 8 testes cobrindo: listagem (ativos, todos, tipos), inativação, reativação, seed (criação e idempotência).
+4. **Testes automatizados** — 9 testes cobrindo: listagem (ativos, todos, tipos), inativação, reativação, preservação de filtro, seed (criação e idempotência).
 
 5. **Seed atualizado** — expandido de 10 para 20 clientes, incluindo clientes com `ativo=False` para ter uma massa de dados mais realista.
 
-6. **API REST com DRF** — criada API completa usando Django Rest Framework:
+6. **API REST com DRF** — criada API usando Django Rest Framework com function-based views (`@api_view`):
    - `GET /api/clientes/` — listar clientes ativos
-   - `GET /api/clientes/?todos=1` — listar todos
-   - `GET /api/clientes/{id}/` — detalhe de um cliente
+   - `GET /api/clientes/?mostrar_inativos=1` — listar todos
    - `PATCH /api/clientes/{id}/inativar/` — inativar cliente
    - `PATCH /api/clientes/{id}/reativar/` — reativar cliente
 
-7. **Frontend Angular** — projeto Angular separado que consome a API REST do backend, com tela de listagem, botões de inativar/reativar e filtro ativo/todos.
+7. **Frontend Angular** — projeto Angular separado que consome a API REST do backend, com tela de listagem, botões de inativar/reativar e filtro ativo/inativos.
 
 8. **CORS** — configurado `django-cors-headers` para permitir que o Angular (porta 4200) acesse o backend (porta 8000).
 
 ### Decisões tomadas
 
 - **Simplicidade** — mantive a implementação direta e sem over-engineering, conforme orientado no teste.
-- **DRF** — usei `ModelViewSet` porque já fornece CRUD completo com poucas linhas, e adicionei `@action` para inativar/reativar.
-- **Filtro via query param** — escolhi `?todos=1` por ser simples e intuitivo, sem precisar de rotas extras.
+- **DRF** — usei `@api_view` (function-based views) para manter os endpoints simples e diretos.
+- **Filtro via query param** — escolhi `?mostrar_inativos=1` por ser simples e intuitivo, sem precisar de rotas extras.
 - **Sem soft delete** — o campo `ativo` não exclui o cliente, apenas o oculta da listagem padrão, permitindo reativação.
 
 ### Como rodar o projeto completo
